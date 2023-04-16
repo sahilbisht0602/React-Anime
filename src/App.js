@@ -10,7 +10,13 @@ function App() {
   const [page, setPage] = useState(1);
   const [isNextPage, setIsNextPage] = useState(true);
   useEffect(() => {
-    getAnimeData();
+    const timer = setTimeout(() => {
+      getAnimeData();
+    }, 200);
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, [page]);
   const decrementCounter = () => {
     if (page > 1) {
@@ -27,11 +33,10 @@ function App() {
       `https://api.jikan.moe/v4/characters?page=${page}&limit=15&q=&order_by=favorites&sort=desc`
     );
     const data = await response.json();
-    setAnimeData(data.data);
-    setAnimeLength(data.pagination.items.total);
-    setIsNextPage(data.pagination.has_next_page);
+    setAnimeData(data?.data);
+    setAnimeLength(data?.pagination?.items?.total);
+    setIsNextPage(data?.pagination?.has_next_page);
   };
-  console.log(animeData);
   const newAnimeDataHandler = async function (searchText) {
     // console.log(searchText);
     if (searchText === "" || searchText?.length === 0) getAnimeData();
@@ -39,8 +44,8 @@ function App() {
       `https://api.jikan.moe/v4/characters?page=0&limit=15&q=${searchText}&order_by=favorites&sort=desc`
     );
     const data = await response.json();
-    setAnimeData(data.data);
-    setAnimeLength(data.pagination.items.total);
+    setAnimeData(data?.data);
+    setAnimeLength(data?.pagination?.items?.total);
   };
 
   return (
